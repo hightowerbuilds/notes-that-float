@@ -12,7 +12,33 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [TanStackRouterVite({ autoCodeSplitting: true }), viteReact()],
     build: {
-      chunkSizeWarningLimit: 1000, // Increase the chunk size warning limit
+      chunkSizeWarningLimit: 500, // Reasonable limit for 3D apps
+      rollupOptions: {
+        output: {
+          // Prepare for future chunk splitting when implementing dynamic imports
+          manualChunks: {
+            // Ready for when we implement dynamic imports
+            'three-vendor': ['three', '@react-three/fiber', '@react-three/drei', 'troika-three-text'],
+            'react-vendor': ['react', 'react-dom'],
+            'router-vendor': ['@tanstack/react-router'],
+            'supabase-vendor': ['@supabase/supabase-js'],
+          },
+          // Organize chunks by size and loading priority
+          chunkFileNames: (chunkInfo) => {
+            const facadeModuleId = chunkInfo.facadeModuleId;
+            if (facadeModuleId?.includes('three')) {
+              return 'assets/3d-[name]-[hash].js';
+            }
+            if (facadeModuleId?.includes('life-notes')) {
+              return 'assets/notes-[name]-[hash].js';
+            }
+            if (facadeModuleId?.includes('auth')) {
+              return 'assets/auth-[name]-[hash].js';
+            }
+            return 'assets/[name]-[hash].js';
+          }
+        }
+      }
     },
     test: {
       globals: true,
