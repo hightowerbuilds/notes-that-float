@@ -9,36 +9,39 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      financial_transactions: {
+      life_notes: {
         Row: {
-          id: number
-          transaction_date: string
-          amount: number
-          description: string
-          location: string | null
-          transaction_type: 'expenditure' | 'deposit' | 'uncertain'
-          category: string | null
+          id: string
+          user_id: string
+          day_string: string
+          content: string
+          note_date: string
+          month: number
+          year: number
           created_at: string
+          updated_at: string
         }
         Insert: {
-          id?: number
-          transaction_date: string
-          amount: number
-          description: string
-          location?: string | null
-          transaction_type: 'expenditure' | 'deposit' | 'uncertain'
-          category?: string | null
+          id?: string
+          user_id: string
+          day_string: string
+          content: string
+          note_date: string
+          month: number
+          year: number
           created_at?: string
+          updated_at?: string
         }
         Update: {
-          id?: number
-          transaction_date?: string
-          amount?: number
-          description?: string
-          location?: string | null
-          transaction_type?: 'expenditure' | 'deposit' | 'uncertain'
-          category?: string | null
+          id?: string
+          user_id?: string
+          day_string?: string
+          content?: string
+          note_date?: string
+          month?: number
+          year?: number
           created_at?: string
+          updated_at?: string
         }
       }
     }

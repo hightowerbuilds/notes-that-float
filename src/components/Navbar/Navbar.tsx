@@ -83,22 +83,7 @@ export function Navbar() {
           >
             Home
           </Link>
-          <Link
-            to="/money-modes"
-            className="nav-link"
-            activeProps={{ className: 'nav-link active' }}
-            onClick={closeMobileMenu}
-          >
-            Money Modes
-          </Link>
-          <Link
-            to="/store"
-            className="nav-link"
-            activeProps={{ className: 'nav-link active' }}
-            onClick={closeMobileMenu}
-          >
-           Brontosaurus Publications
-          </Link>
+
           <Link
             to="/life-notes"
             className="nav-link"

@@ -1,17 +1,22 @@
-## www.hightowerbuilds.com
+# Notes That Float
 
-## money modes
-###### the purpose of this app is to give users a chance to look at their bank statements and other banking information in a different modality. Now one may ask, what is a different modalitiy. An example is taken written numbers, eg a bank statement, and turning them into 3d objects that represent their meaning (ratio to one another). 
+## A 3D Note-Taking Experience
 
-###### users will be able to upload their information, customize a modality to view or even listen their data. after this the user will be able to edit and delete all information.
+**Notes That Float** is an immersive note-taking application that transforms traditional journaling into an interactive 3D experience. Write your thoughts, journal entries, or creative works while exploring them in a beautiful three-dimensional space.
 
-## brontosaurus publications
+### Features
 
-###### this is a zine and art collection page. other elements are to come. along with that i've included one terrible, terrible game. 
+- **3D Planet Interface**: Your notes orbit around a dynamic planet with month-specific color schemes
+- **Interactive Calendar**: Click on days to add notes, navigate through months and years
+- **Immersive Environment**: Starfield backgrounds and orbital controls create a game-like writing experience
+- **User Authentication**: Secure login system to keep your notes private
+- **Real-time Sync**: Your notes are saved instantly and synced across devices
+- **Customizable Views**: Toggle visibility of dates, notes, rings, and planet elements
 
-## notes that float
+### Technology
 
-###### this is a note taking app that is intention is inspired organization. users will be able to take notes, journal personal thoughts, write a novel or screen play. all of these writing modes will be enhanced in interest and joy by of a creating exciting 3d game-like environments to both write and organize your story. much more to come... # notes-that-float
-# notes-that-float
+Built with React, TypeScript, Three.js, and Supabase for a modern, performant experience.
 
-##### testing testing again 
+---
+
+*Transform your thoughts into a floating universe of ideas at www.hightowerbuilds.com* 
