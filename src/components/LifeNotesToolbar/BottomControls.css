@@ -1,0 +1,211 @@
+/* Bottom Controls Component Styles */
+
+.toolbar-container.minimized .bottom-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 1000;
+}
+
+/* Ensure buttons are always visible */
+.bottom-controls {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1000;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+  transform: translateY(0);
+}
+
+/* When toolbar is minimized (closed), buttons stay low on the page */
+.bottom-controls.floating {
+  transform: translateY(0);
+  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+}
+
+/* When toolbar is open, buttons float up above it */
+.bottom-controls:not(.floating) {
+  transform: translateY(-595px);
+  transition: transform 3.2s ease-out, opacity 3.2s ease-out;
+}
+
+/* Controls buttons container - ensure inline layout */
+.controls-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Rotation toggle and stop buttons */
+.rotation-toggle-btn,
+.rotation-stop-btn {
+  background: transparent;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: lowercase;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  box-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(255, 255, 255, 0.1);
+  animation: float 3s ease-in-out infinite;
+}
+
+.rotation-toggle-btn {
+  animation-delay: 0s;
+}
+
+.rotation-stop-btn {
+  width: 80px;
+  animation-delay: 1s;
+}
+
+.rotation-toggle-btn:hover,
+.rotation-stop-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 0 15px rgba(255, 255, 255, 0.5),
+    0 0 30px rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.rotation-toggle-btn:active,
+.rotation-stop-btn:active {
+  transform: scale(0.95) translateY(-2px);
+}
+
+/* Toolbar minimize button */
+.toolbar-minimize-btn {
+  background: transparent;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  text-transform: lowercase;
+  letter-spacing: 1px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  box-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(255, 255, 255, 0.1);
+  animation: float 3s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.toolbar-minimize-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 0 15px rgba(255, 255, 255, 0.5),
+    0 0 30px rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Fullscreen styles */
+.toolbar-container.fullscreen .bottom-controls {
+  display: none;
+}
+
+/* Non-minimized toolbar styles */
+.toolbar-container:not(.minimized) .bottom-controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.toolbar-container:not(.minimized) .rotation-toggle-btn,
+.toolbar-container:not(.minimized) .rotation-stop-btn {
+  color: #87CEEB;
+  border-color: #87CEEB;
+}
+
+.toolbar-container:not(.minimized) .rotation-toggle-btn {
+  color: #87CEEB;
+  border-color: #87CEEB;
+}
+
+.toolbar-container:not(.minimized) .rotation-stop-btn {
+  color: #87CEEB;
+  border-color: #87CEEB;
+}
+
+.toolbar-container:not(.minimized) .toolbar-minimize-btn {
+  color: #87CEEB;
+  border-color: #87CEEB;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .bottom-controls {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    max-width: none;
+    gap: 0.5rem;
+  }
+
+  .rotation-toggle-btn,
+  .rotation-stop-btn {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.8rem;
+    min-width: 40px;
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bottom-controls {
+    bottom: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    gap: 0.3rem;
+  }
+
+  .rotation-toggle-btn,
+  .rotation-stop-btn {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.6rem;
+    min-width: 36px;
+    min-height: 36px;
+    letter-spacing: 0.5px;
+  }
+}

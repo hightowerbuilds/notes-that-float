@@ -1,0 +1,142 @@
+/* Toggle Controls Component Styles */
+
+/* New Box Under Calendar */
+.new-box-section {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--neon-blue);
+  border-radius: 8px;
+  padding: 1rem;
+  grid-column: 1;
+  grid-row: 2;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.new-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(135, 206, 235, 0.2);
+}
+
+.new-box-title {
+  color: var(--neon-blue);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.new-box-content {
+  color: var(--neon-blue);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.new-box-content p {
+  margin: 0;
+  color: rgba(135, 206, 235, 0.8);
+}
+
+/* Planet Controls Grid */
+.planet-controls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+/* Planet Control Buttons */
+.planet-control-btn {
+  background: rgba(135, 206, 235, 0.1);
+  border: 1px solid var(--neon-blue);
+  color: var(--neon-blue);
+  border-radius: 4px;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.planet-control-btn:hover {
+  background: rgba(135, 206, 235, 0.2);
+  box-shadow: 0 0 8px var(--neon-blue);
+}
+
+.planet-control-btn:active {
+  transform: scale(0.95);
+}
+
+.planet-control-btn.hide-state {
+  background: rgba(245, 245, 220, 0.2);
+  border: 1px solid #F5F5DC;
+  color: #F5F5DC;
+}
+
+.planet-control-btn.hide-state:hover {
+  background: rgba(245, 245, 220, 0.3);
+  box-shadow: 0 0 8px #F5F5DC;
+}
+
+/* Fullscreen styles */
+.toolbar-container.fullscreen .new-box-section {
+  display: none;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .new-box-section {
+    padding: 0.8rem;
+  }
+
+  .new-box-title {
+    font-size: 1rem;
+  }
+
+  .planet-controls-grid {
+    gap: 0.4rem;
+  }
+
+  .planet-control-btn {
+    font-size: 0.7rem;
+    padding: 0.5rem 0.6rem;
+    min-height: 40px;
+    letter-spacing: 0.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .new-box-section {
+    padding: 0.6rem;
+  }
+
+  .new-box-title {
+    font-size: 0.9rem;
+  }
+
+  .planet-controls-grid {
+    gap: 0.3rem;
+    grid-template-columns: 1fr; /* Stack buttons vertically on small screens */
+  }
+
+  .planet-control-btn {
+    font-size: 0.6rem;
+    padding: 0.4rem 0.5rem;
+    min-height: 36px;
+    letter-spacing: 0.3px;
+  }
+}

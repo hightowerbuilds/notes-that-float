@@ -1,0 +1,21 @@
+.pdf-viewer {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.pdf-loading {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+}
+
+.pdf-error {
+  padding: 2rem;
+  text-align: center;
+  color: #dc2626;
+  background-color: #fee2e2;
+  border-radius: 4px;
+  margin: 1rem 0;
+} 

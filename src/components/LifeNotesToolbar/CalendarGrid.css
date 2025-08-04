@@ -1,0 +1,275 @@
+/* Calendar Grid Component Styles */
+
+/* Notes Toolbar Container */
+.notes-toolbar {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--neon-blue);
+  border-radius: 8px;
+  padding: 1rem;
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Toolbar Header */
+.toolbar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(135, 206, 235, 0.2);
+  flex-shrink: 0;
+}
+
+.toolbar-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.toolbar-month-label {
+  color: var(--neon-blue);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.notes-toolbar.minimized .toolbar-header {
+  margin-bottom: 0;
+}
+
+.toolbar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Month Navigation Buttons */
+.toolbar-month-btn {
+  background: rgba(135, 206, 235, 0.1);
+  border: 1px solid var(--neon-blue);
+  color: var(--neon-blue);
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.2s;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbar-month-btn:hover {
+  background: rgba(135, 206, 235, 0.2);
+  box-shadow: 0 0 8px var(--neon-blue);
+}
+
+/* Calendar Grid */
+.toolbar-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.toolbar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.15rem;
+  margin-bottom: 5px;
+}
+
+.weekday-header {
+  color: var(--neon-blue);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.3rem;
+}
+
+.toolbar-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.15rem;
+}
+
+.toolbar-day-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40px;
+}
+
+.toolbar-day-cell.empty {
+  background: transparent;
+}
+
+/* Day Buttons */
+.toolbar-day-btn {
+  background: rgba(135, 206, 235, 0.1);
+  border: 1px solid rgba(135, 206, 235, 0.3);
+  color: var(--neon-blue);
+  border-radius: 4px;
+  padding: 0.4rem;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  min-width: 35px;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.toolbar-day-btn.selected,
+.toolbar-day-btn:hover {
+  background: rgba(135, 206, 235, 0.3);
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 8px var(--neon-blue);
+}
+
+.toolbar-day-btn.has-notes {
+  background: rgba(0, 255, 0, 0.2);
+  border-color: #00ff00;
+  color: #00ff00;
+}
+
+.toolbar-day-btn.has-notes:hover {
+  background: rgba(0, 255, 0, 0.3);
+  box-shadow: 0 0 8px #00ff00;
+}
+
+.toolbar-day-btn.highlighted {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #ffffff;
+  color: #000000;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  text-shadow: none;
+  font-weight: bold;
+}
+
+.toolbar-day-btn.highlighted:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+}
+
+/* Container-specific styles */
+.toolbar-container.minimized .notes-toolbar {
+  display: none;
+}
+
+.toolbar-container:not(.minimized) .notes-toolbar {
+  display: flex;
+}
+
+/* Fullscreen styles */
+.toolbar-container.fullscreen .notes-toolbar {
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid #87CEEB;
+  height: calc(100vh - 25px);
+  overflow-y: auto;
+  grid-column: 1;
+  grid-row: 1;
+  padding: 2rem;
+}
+
+.toolbar-container.fullscreen .toolbar-month-label {
+  font-size: 1.4rem;
+  color: #87CEEB;
+}
+
+.toolbar-container.fullscreen .toolbar-day-btn {
+  min-width: 45px;
+  min-height: 45px;
+  font-size: 1rem;
+}
+
+.toolbar-container.fullscreen .weekday-header {
+  font-size: 1rem;
+}
+
+.toolbar-container.fullscreen .toolbar-month-btn {
+  padding: 0.6rem 1rem;
+  font-size: 1.2rem;
+}
+
+.toolbar-container.fullscreen .toolbar-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+}
+
+.toolbar-container.fullscreen .toolbar-calendar {
+  gap: 8px;
+  padding-right: 1rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .notes-toolbar {
+    padding: 0.8rem;
+  }
+
+  .toolbar-header {
+    margin-bottom: 0.8rem;
+  }
+
+  .toolbar-month-label {
+    font-size: 1rem;
+  }
+
+  .toolbar-day-btn {
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 0.8rem;
+  }
+
+  .weekday-header {
+    font-size: 0.7rem;
+    padding: 0.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .notes-toolbar {
+    padding: 0.6rem;
+  }
+
+  .toolbar-month-label {
+    font-size: 0.9rem;
+  }
+
+  .toolbar-day-btn {
+    min-width: 28px;
+    min-height: 28px;
+    font-size: 0.7rem;
+    padding: 0.2rem;
+  }
+
+  .weekday-header {
+    font-size: 0.6rem;
+    letter-spacing: 0.5px;
+  }
+
+  .toolbar-month-btn {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,53 @@
+/* Global CSS Variables */
+:root {
+  /* Colors */
+  --primary-bg: #1a202c;
+  --secondary-bg: #2d3748;
+  --text-color: #2d3748;
+  --light-text: #718096;
+  --border-color: #e2e8f0;
+  --primary-text: white;
+  --hover-text: #d1d5db;
+  --active-text: #60a5fa;
+
+  /* Background Colors */
+  --background-color: #ffffff;
+  --background-color-light: #f8fafc;
+  --background-color-hover: #f1f5f9;
+  --background-color-active: #e2e8f0;
+
+  /* Dark Mode Colors */
+  --dark-bg: #0f172a;
+  --dark-bg-light: #1e293b;
+  --dark-bg-hover: #334155;
+  --dark-border: #334155;
+  --dark-text: #e2e8f0;
+  --dark-text-light: #94a3b8;
+
+  /* Neon Colors */
+  --neon-blue: #00f3ff;
+  --neon-purple: #bf00ff;
+  --neon-pink: #ff00ff;
+  --neon-green: #39ff14;
+  --neon-yellow: #ffff00;
+  --neon-orange: #ff9d00;
+
+  /* Status Colors */
+  --info-background: #e0f2fe;
+  --info-color: #0369a1;
+  --info-border: #7dd3fc;
+  --success-background: #dcfce7;
+  --success-color: #166534;
+  --success-border: #86efac;
+  --error-background: #fee2e2;
+  --error-color: #dc2626;
+  --error-border: #fca5a5;
+  --warning-background: #fef3c7;
+  --warning-color: #d97706;
+  --warning-border: #fcd34d;
+
+  /* Button Colors */
+  --button-background: #f1f5f9;
+  --button-background-hover: #e2e8f0;
+  --border-color-hover: #cbd5e1;
+} 

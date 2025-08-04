@@ -1,0 +1,57 @@
+/* Zine Two Page Styles */
+.zine-two-content {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  z-index: 10;
+  position: relative;
+}
+
+.page-title {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.zine-cover {
+  margin: 2rem 0;
+}
+
+.zine-cover img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.zine-description {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.zine-description p {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.1rem;
+  color: #ffffff;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .zine-two-content {
+    padding: 1rem;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .zine-description p {
+    font-size: 1rem;
+  }
+} 

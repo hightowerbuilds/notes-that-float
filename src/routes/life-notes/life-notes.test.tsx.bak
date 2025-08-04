@@ -1,0 +1,139 @@
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { LifeNotesPage } from './index'
+
+// Mock the route creation
+vi.mock('@tanstack/react-router', () => ({
+  createFileRoute: () => ({}),
+  useSearch: () => ({}),
+  useNavigate: () => vi.fn()
+}))
+
+describe('Life Notes Page', () => {
+  it('renders the main page elements', () => {
+    render(<LifeNotesPage />)
+    
+    expect(screen.getByText('NOTES THAT FLOAT')).toBeInTheDocument()
+    expect(screen.getByText('JUNE 2025')).toBeInTheDocument()
+    expect(screen.getByTestId('canvas')).toBeInTheDocument()
+  })
+
+  it('renders rotation control buttons', () => {
+    render(<LifeNotesPage />)
+    
+    expect(screen.getByText('>')).toBeInTheDocument() // Rotation toggle
+    expect(screen.getByText('stop')).toBeInTheDocument() // Stop button
+  })
+
+  it('shows input form when a day is clicked', async () => {
+    const user = userEvent.setup()
+    render(<LifeNotesPage />)
+    
+    // Click on a day text element
+    const dayText = screen.getByText('1 SUN')
+    await user.click(dayText)
+    
+    // Should show the input form
+    expect(screen.getByText('Existing notes for 1 SUN:')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Enter information')).toBeInTheDocument()
+    expect(screen.getByText('Add Note')).toBeInTheDocument()
+    expect(screen.getByText('Done')).toBeInTheDocument()
+    expect(screen.getByText('Cancel')).toBeInTheDocument()
+  })
+
+  it('allows adding multiple notes for the same day', async () => {
+    const user = userEvent.setup()
+    render(<LifeNotesPage />)
+    
+    // Click on a day to open form
+    const dayText = screen.getByText('1 SUN')
+    await user.click(dayText)
+    
+    const input = screen.getByPlaceholderText('Enter information')
+    const addButton = screen.getByText('Add Note')
+    
+    // Add first note
+    await user.type(input, 'Morning coffee')
+    await user.click(addButton)
+    
+    // Form should stay open and show the note
+    expect(screen.getByText('1. Morning coffee')).toBeInTheDocument()
+    expect(input).toHaveValue('') // Input should be cleared
+    
+    // Add second note
+    await user.type(input, 'Walk in the park')
+    await user.click(addButton)
+    
+    // Should show both notes
+    expect(screen.getByText('1. Morning coffee')).toBeInTheDocument()
+    expect(screen.getByText('2. Walk in the park')).toBeInTheDocument()
+  })
+
+  it('closes form when Done is clicked', async () => {
+    const user = userEvent.setup()
+    render(<LifeNotesPage />)
+    
+    // Open form
+    const dayText = screen.getByText('1 SUN')
+    await user.click(dayText)
+    
+    // Add a note
+    const input = screen.getByPlaceholderText('Enter information')
+    const addButton = screen.getByText('Add Note')
+    await user.type(input, 'Test note')
+    await user.click(addButton)
+    
+    // Click Done
+    const doneButton = screen.getByText('Done')
+    await user.click(doneButton)
+    
+    // Form should be closed
+    expect(screen.queryByText('Existing notes for 1 SUN:')).not.toBeInTheDocument()
+    expect(screen.queryByPlaceholderText('Enter information')).not.toBeInTheDocument()
+  })
+
+  it('closes form when Cancel is clicked', async () => {
+    const user = userEvent.setup()
+    render(<LifeNotesPage />)
+    
+    // Open form
+    const dayText = screen.getByText('1 SUN')
+    await user.click(dayText)
+    
+    // Click Cancel
+    const cancelButton = screen.getByText('Cancel')
+    await user.click(cancelButton)
+    
+    // Form should be closed
+    expect(screen.queryByText('Existing notes for 1 SUN:')).not.toBeInTheDocument()
+  })
+
+  it('shows no notes message when day has no entries', async () => {
+    const user = userEvent.setup()
+    render(<LifeNotesPage />)
+    
+    // Click on a day
+    const dayText = screen.getByText('1 SUN')
+    await user.click(dayText)
+    
+    // Should show no notes message
+    expect(screen.getByText('No notes yet for this day')).toBeInTheDocument()
+  })
+
+  it('allows changing selected day in dropdown', async () => {
+    const user = userEvent.setup()
+    render(<LifeNotesPage />)
+    
+    // Open form
+    const dayText = screen.getByText('1 SUN')
+    await user.click(dayText)
+    
+    // Change day in dropdown
+    const daySelect = screen.getByDisplayValue('1 SUN')
+    await user.selectOptions(daySelect, '15 SUN')
+    
+    // Should update the header
+    expect(screen.getByText('Existing notes for 15 SUN:')).toBeInTheDocument()
+  })
+}) 

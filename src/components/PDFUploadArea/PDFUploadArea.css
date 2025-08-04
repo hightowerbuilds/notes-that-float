@@ -1,0 +1,234 @@
+.pdf-upload-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.upload-container {
+  background:transparent;
+  padding: 1%;
+
+  border-radius: 2px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-container:hover {
+  border-color: #1e90ff;
+  box-shadow: 0 0 20px rgba(30, 144, 255, 0.5);
+}
+
+.upload-container.dragover {
+  border-color: #00ff00;
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.7);
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.upload-heading {
+  margin-bottom: 1.5rem;
+}
+
+.heading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.letter-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.letter-row {
+  display: flex;
+  gap: 0.1rem;
+}
+
+.square {
+  width: 6px;
+  height: 6px;
+  border: 1px solid;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 0 6px currentColor;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.square.active {
+  background-color: currentColor;
+  box-shadow: 
+    0 0 8px currentColor,
+    0 0 16px currentColor,
+    inset 0 0 4px rgba(255, 255, 255, 0.3);
+}
+
+.square.blinking {
+  animation: blink 0.5s ease-in-out infinite alternate;
+}
+
+.square.active.blinking {
+  animation: activeBlink 0.5s ease-in-out infinite alternate;
+}
+
+.square.column-hovered {
+  background-color: #1e90ff !important;
+  border-color: #1e90ff !important;
+  box-shadow: 
+    0 0 8px #1e90ff,
+    0 0 16px #1e90ff,
+    inset 0 0 4px rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.1);
+  z-index: 5;
+}
+
+.square:hover {
+  background-color: #1e90ff !important;
+  border-color: #1e90ff !important;
+  box-shadow: 
+    0 0 8px #1e90ff,
+    0 0 16px #1e90ff,
+    inset 0 0 4px rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.2);
+  z-index: 10;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+}
+
+@keyframes activeBlink {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.95);
+    box-shadow: 
+      0 0 4px currentColor,
+      0 0 8px currentColor,
+      inset 0 0 2px rgba(255, 255, 255, 0.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 
+      0 0 12px currentColor,
+      0 0 24px currentColor,
+      inset 0 0 6px rgba(255, 255, 255, 0.4);
+  }
+}
+
+.upload-subtitle {
+  margin-top: 1rem;
+}
+
+.upload-subtitle p {
+  margin: 0.5rem 0;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.upload-status {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.upload-status.success {
+  background: rgba(0, 255, 0, 0.2);
+  border: 1px solid #00ff00;
+  color: #00ff00;
+}
+
+.upload-status.error {
+  background: rgba(255, 0, 0, 0.2);
+  border: 1px solid #ff0000;
+  color: #ff0000;
+}
+
+.upload-status.processing {
+  background: rgba(255, 255, 0, 0.2);
+  border: 1px solid #ffff00;
+  color: #ffff00;
+}
+
+.loading {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .upload-container {
+    min-width: 90vw;
+    padding: 1.5rem;
+  }
+  
+  .square {
+    width: 0.6rem;
+    height: 0.6rem;
+  }
+  
+  .heading-container {
+    gap: 0.3rem;
+  }
+  
+  .letter-container {
+    gap: 0.05rem;
+  }
+  
+  .letter-row {
+    gap: 0.05rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-container {
+    padding: 1rem;
+  }
+  
+  .square {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+  
+  .upload-subtitle p {
+    font-size: 0.9rem;
+  }
+} 
