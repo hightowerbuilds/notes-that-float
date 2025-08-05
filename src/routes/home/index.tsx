@@ -31,7 +31,7 @@ function Home() {
         <div className={`home-content ${!user ? 'unauthenticated' : ''}`}>
           {!user && (
             <>
-              <h1 className="site-heading">hightowerbuilds.com</h1>
+              <h1 className="site-heading">welcome to notes that float</h1>
               <AuthForm />
          
             </>
@@ -39,7 +39,7 @@ function Home() {
           
           {user && (
             <>
-              <h1 className="welcome-title-3d">Welcome to hightowerbuilds</h1>
+              <h1 className="welcome-title-3d">welcome to notes that float</h1>
               <p className="quote-text-3d">This project's intentions are of wide berth and are currently sprawling as such. Its inspirations go deep and are free to roam through all modalities. Please look around and interact.</p>
              
             </>

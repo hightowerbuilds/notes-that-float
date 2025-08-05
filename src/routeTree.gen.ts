@@ -11,10 +11,17 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as WritingIndexImport } from './routes/writing/index'
 import { Route as LifeNotesIndexImport } from './routes/life-notes/index'
 import { Route as HomeIndexImport } from './routes/home/index'
 
 // Create/Update Routes
+
+const WritingIndexRoute = WritingIndexImport.update({
+  id: '/writing/',
+  path: '/writing/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LifeNotesIndexRoute = LifeNotesIndexImport.update({
   id: '/life-notes/',
@@ -46,6 +53,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LifeNotesIndexImport
       parentRoute: typeof rootRoute
     }
+    '/writing/': {
+      id: '/writing/'
+      path: '/writing'
+      fullPath: '/writing'
+      preLoaderRoute: typeof WritingIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -54,36 +68,41 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/home': typeof HomeIndexRoute
   '/life-notes': typeof LifeNotesIndexRoute
+  '/writing': typeof WritingIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/home': typeof HomeIndexRoute
   '/life-notes': typeof LifeNotesIndexRoute
+  '/writing': typeof WritingIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/home/': typeof HomeIndexRoute
   '/life-notes/': typeof LifeNotesIndexRoute
+  '/writing/': typeof WritingIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/home' | '/life-notes'
+  fullPaths: '/home' | '/life-notes' | '/writing'
   fileRoutesByTo: FileRoutesByTo
-  to: '/home' | '/life-notes'
-  id: '__root__' | '/home/' | '/life-notes/'
+  to: '/home' | '/life-notes' | '/writing'
+  id: '__root__' | '/home/' | '/life-notes/' | '/writing/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   HomeIndexRoute: typeof HomeIndexRoute
   LifeNotesIndexRoute: typeof LifeNotesIndexRoute
+  WritingIndexRoute: typeof WritingIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   HomeIndexRoute: HomeIndexRoute,
   LifeNotesIndexRoute: LifeNotesIndexRoute,
+  WritingIndexRoute: WritingIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,7 +116,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/home/",
-        "/life-notes/"
+        "/life-notes/",
+        "/writing/"
       ]
     },
     "/home/": {
@@ -105,6 +125,9 @@ export const routeTree = rootRoute
     },
     "/life-notes/": {
       "filePath": "life-notes/index.tsx"
+    },
+    "/writing/": {
+      "filePath": "writing/index.tsx"
     }
   }
 }

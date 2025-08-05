@@ -1,0 +1,77 @@
+/* Writing Page Specific Styles */
+
+/* Remove navbar padding when user is not authenticated */
+.page-container.no-navbar {
+  padding-top: 0;
+}
+
+.writing-content {
+  text-align: center;
+  max-width: 100%;
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 2rem;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* When user is not authenticated, add more margin */
+.writing-content.unauthenticated {
+  justify-content: center;
+  padding-top: 8rem;
+}
+
+.writing-content .page-title {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 2rem 0 1rem 0;
+  z-index: 10;
+  position: relative;
+  
+  /* 3D Text Effect */
+  text-shadow: 
+    0 1px 0 #ccc,
+    0 2px 0 #c9c9c9,
+    0 3px 0 #bbb,
+    0 4px 0 #b9b9b9,
+    0 5px 0 #aaa,
+    0 6px 1px rgba(0,0,0,.1),
+    0 0 5px rgba(0,0,0,.1),
+    0 1px 3px rgba(0,0,0,.3),
+    0 3px 5px rgba(0,0,0,.2),
+    0 5px 10px rgba(0,0,0,.25),
+    0 10px 10px rgba(0,0,0,.2),
+    0 20px 20px rgba(0,0,0,.15);
+  
+  /* Animation */
+  animation: float 3s ease-in-out infinite;
+}
+
+.writing-content .page-description {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.25rem;
+  color: #ffffff;
+  text-align: center;
+  margin: 1rem 0;
+  z-index: 10;
+  position: relative;
+  opacity: 0.8;
+}
+
+/* Float animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

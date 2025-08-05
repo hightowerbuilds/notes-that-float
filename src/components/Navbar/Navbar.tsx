@@ -90,7 +90,16 @@ export function Navbar() {
             activeProps={{ className: 'nav-link active' }}
             onClick={closeMobileMenu}
           >
-            Notes that Float
+            Calendar
+          </Link>
+
+          <Link
+            to="/writing"
+            className="nav-link"
+            activeProps={{ className: 'nav-link active' }}
+            onClick={closeMobileMenu}
+          >
+            Writing
           </Link>
           
           {/* User authentication section */}
