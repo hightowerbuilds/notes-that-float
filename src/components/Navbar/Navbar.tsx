@@ -108,7 +108,7 @@ export function Navbar() {
               {user ? (
                 <>
                   <span className="nav-user-info">
-                    Welcome, {user.username}
+                    {user.is_guest ? 'Guest User' : `Welcome, ${user.username}`}
                   </span>
                   <button 
                     onClick={handleLogout}
@@ -120,7 +120,7 @@ export function Navbar() {
                 </>
               ) : (
                 <span className="nav-guest-info">
-                  Guest User
+                  Not logged in
                 </span>
               )}
             </div>

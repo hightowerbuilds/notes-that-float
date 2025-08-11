@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
-import { loginUser, registerUser, logoutUser, getCurrentUser } from './auth'
+import { loginUser, registerUser, logoutUser, getCurrentUser, loginAsGuest } from './auth'
 import type { User } from './auth'
 
 interface AuthContextType {
@@ -9,6 +9,7 @@ interface AuthContextType {
   error: string | null
   login: (username: string, password: string) => Promise<void>
   signup: (username: string, password: string, email?: string) => Promise<void>
+  loginGuest: () => Promise<void>
   logout: () => Promise<void>
   clearError: () => void
 }
@@ -72,6 +73,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  const loginGuest = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const userData = await loginAsGuest()
+      setUser(userData)
+    } catch (err) {
+      console.error('useAuth: Guest login error:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Guest login failed'
+      setError(errorMessage)
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const logout = async () => {
     try {
       setLoading(true)
@@ -97,6 +114,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     error,
     login,
     signup,
+    loginGuest,
     logout,
     clearError
   }

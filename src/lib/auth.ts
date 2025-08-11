@@ -9,6 +9,7 @@ export interface User {
   last_login?: string
   is_active: boolean
   profile_data?: any
+  is_guest?: boolean
 }
 
 export interface AuthError {
@@ -251,6 +252,28 @@ export const getCurrentUser = async (): Promise<User | null> => {
   } catch (error) {
     console.error('Error getting current user:', error)
     return null
+  }
+}
+
+// Login as guest user
+export const loginAsGuest = async (): Promise<User> => {
+  try {
+    // Create a guest user object
+    const guestUser: User = {
+      id: 'guest-' + Date.now(),
+      username: 'Guest',
+      created_at: new Date().toISOString(),
+      is_active: true,
+      is_guest: true
+    }
+
+    // Store guest session
+    storeUserSession(guestUser)
+
+    return guestUser
+  } catch (error) {
+    console.error('Guest login error:', error)
+    throw new Error('Failed to login as guest')
   }
 }
 

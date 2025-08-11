@@ -98,7 +98,8 @@ function AuthForm3D({
   toggleMode,
   activeInput,
   setActiveInput,
-  showForm
+  showForm,
+  loginGuest
 }: {
   isLogin: boolean
   username: string
@@ -111,6 +112,7 @@ function AuthForm3D({
   activeInput: 'username' | 'password' | null
   setActiveInput: (input: 'username' | 'password' | null) => void
   showForm: boolean
+  loginGuest: () => Promise<void>
 }) {
   const groupRef = useRef<THREE.Group>(null)
 
@@ -202,6 +204,46 @@ function AuthForm3D({
           font="/fonts/Courier.ttf"
         >
           LOGIN
+        </Text>
+
+        {/* GUEST Button */}
+        <Box 
+          args={[0.83, 0.27, 0.03]} 
+          position={[0, -0.6, 0.1]}
+          onClick={async (e) => {
+            e.stopPropagation()
+            try {
+              await loginGuest()
+            } catch (error) {
+              console.error('Guest login error:', error)
+              alert('Failed to login as guest. Please try again.')
+            }
+          }}
+          onPointerOver={(e) => {
+            document.body.style.cursor = 'pointer'
+            e.object.scale.setScalar(1.05)
+          }}
+          onPointerOut={(e) => {
+            document.body.style.cursor = 'default'
+            e.object.scale.setScalar(1)
+          }}
+        >
+          <meshStandardMaterial 
+            color={loading ? "#666666" : "#ff9500"} 
+            opacity={0.8} 
+            transparent 
+          />
+        </Box>
+        
+        <Text
+          position={[0, -0.6, 0.17]}
+          fontSize={0.12}
+          color="#ffffff"
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/Courier.ttf"
+        >
+          {loading ? 'LOGGING IN...' : 'GUEST'}
         </Text>
       </group>
     )
@@ -336,7 +378,7 @@ function AuthForm3D({
 }
 
 export function AuthForm({}: AuthFormProps) {
-  const { login, signup, error, clearError, loading } = useAuth()
+  const { login, signup, loginGuest, error, clearError, loading } = useAuth()
   const [isLogin, setIsLogin] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -492,6 +534,7 @@ export function AuthForm({}: AuthFormProps) {
             activeInput={activeInput}
             setActiveInput={setActiveInput}
             showForm={showForm}
+            loginGuest={loginGuest}
           />
           
           <OrbitControls 
