@@ -347,15 +347,15 @@ export function LifeNotesPage() {
     };
   });
 
-  const [isTextPaused, setIsTextPaused] = useState(true)
+  const [isTextPaused, setIsTextPaused] = useState(false)
   const [notes, setNotes] = useState<Note[]>([])
   const [newNote, setNewNote] = useState('')
   const [selectedDay, setSelectedDay] = useState(initialDateValues.todayString)
-  const [showInput, setShowInput] = useState(true)
+  const [showInput, setShowInput] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState(initialDateValues.month);
   const [selectedYear] = useState(initialDateValues.year);
-  const [isToolbarMinimized, setIsToolbarMinimized] = useState(false)
-  const [isHeadingHidden, setIsHeadingHidden] = useState(false)
+  const [isToolbarMinimized, setIsToolbarMinimized] = useState(true)
+  const [isHeadingHidden, setIsHeadingHidden] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [areDatesVisible, setAreDatesVisible] = useState(true)

@@ -35,13 +35,13 @@
 /* When toolbar is minimized (closed), buttons stay low on the page */
 .bottom-controls.floating {
   transform: translateY(0);
-  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+  transition: transform 1.4s ease-out;
 }
 
-/* When toolbar is open, buttons float up above it */
+/* When toolbar is open, buttons float up to navbar level - faster than dashboard */
 .bottom-controls:not(.floating) {
-  transform: translateY(-595px);
-  transition: transform 3.2s ease-out, opacity 3.2s ease-out;
+  transform: translateY(calc(-100vh + 5rem + 25px));
+  transition: transform 2.2s ease-out;
 }
 
 /* Controls buttons container - ensure inline layout */
@@ -183,6 +183,14 @@
     gap: 0.5rem;
   }
 
+  .bottom-controls.floating {
+    transform: translateY(0);
+  }
+
+  .bottom-controls:not(.floating) {
+    transform: translateY(calc(-100vh + 4rem + 25px));
+  }
+
   .rotation-toggle-btn,
   .rotation-stop-btn {
     font-size: 0.8rem;
@@ -198,6 +206,14 @@
     left: 0.5rem;
     right: 0.5rem;
     gap: 0.3rem;
+  }
+
+  .bottom-controls.floating {
+    transform: translateY(0);
+  }
+
+  .bottom-controls:not(.floating) {
+    transform: translateY(calc(-100vh + 3.5rem + 25px));
   }
 
   .rotation-toggle-btn,

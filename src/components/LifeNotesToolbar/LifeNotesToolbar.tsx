@@ -3,7 +3,7 @@ import './LifeNotesToolbar.css'
 import { BottomControls } from './BottomControls'
 import { CalendarGrid } from './CalendarGrid'
 import { NotesDirectory } from './NotesDirectory' 
-import { ToggleControls } from './ToggleControls'
+
 
 interface Note {
   id: string
@@ -97,6 +97,12 @@ export function LifeNotesToolbar({
   const dragStartYRef = useRef(0)
   const dragStartHeightRef = useRef(45)
 
+  // Dashboard drag state
+  const [dashboardHeight, setDashboardHeight] = useState(95) // Current height in px
+  const [isDashboardDragging, setIsDashboardDragging] = useState(false)
+  const dashboardDragStartY = useRef(0)
+  const dashboardDragStartHeight = useRef(95)
+
 
 
 
@@ -177,6 +183,29 @@ export function LifeNotesToolbar({
     document.addEventListener('mouseup', handleMouseUp)
   }, [textDisplayHeight])
 
+  // Dashboard drag handler
+  const handleDashboardDragStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    setIsDashboardDragging(true)
+    dashboardDragStartY.current = e.clientY
+    dashboardDragStartHeight.current = dashboardHeight
+    
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const deltaY = dashboardDragStartY.current - moveEvent.clientY // Inverted because dragging up should increase height
+      const newHeight = Math.max(95, Math.min(window.innerHeight - 80, dashboardDragStartHeight.current + deltaY)) // Min 95px, max to just under navbar (80px from top)
+      setDashboardHeight(newHeight)
+    }
+    
+    const handleMouseUp = () => {
+      setIsDashboardDragging(false)
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+    
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }, [dashboardHeight])
+
   return (
     <>
       {/* Control buttons for planet rotation - Floating outside toolbar - Hide in fullscreen */}
@@ -193,8 +222,22 @@ export function LifeNotesToolbar({
             {/* Toolbar Container */}
       <div 
         ref={containerRef}
-        className={`toolbar-container${isToolbarMinimized ? ' minimized' : ''}${isFullscreen ? ' fullscreen' : ''}`}
+        className={`toolbar-container${isToolbarMinimized ? ' minimized' : ''}${isFullscreen ? ' fullscreen' : ''}${isDashboardDragging ? ' dragging' : ''}${dashboardHeight > 200 ? ' expanded' : ''}`}
+        style={!isFullscreen && !isToolbarMinimized ? { height: `${dashboardHeight}px` } : undefined}
       >
+        {/* Drag Handle - Only show when not minimized and not fullscreen */}
+        {!isToolbarMinimized && !isFullscreen && (
+          <div 
+            className="dashboard-drag-handle"
+            onMouseDown={handleDashboardDragStart}
+          >
+            <div className="drag-handle-indicator">
+              <div className="drag-handle-line"></div>
+              <div className="drag-handle-line"></div>
+              <div className="drag-handle-line"></div>
+            </div>
+          </div>
+        )}
         <div 
           className="toolbar-content-wrapper"
           style={isFullscreen ? {
@@ -217,17 +260,6 @@ export function LifeNotesToolbar({
                 isHighlightMode={isHighlightMode}
                 isFullscreen={isFullscreen}
               />
-
-              <ToggleControls
-                areDatesVisible={areDatesVisible}
-                areNotesVisible={areNotesVisible}
-                areRingsVisible={areRingsVisible}
-                isPlanetVisible={isPlanetVisible}
-                onToggleDatesVisibility={onToggleDatesVisibility}
-                onToggleNotesVisibility={onToggleNotesVisibility}
-                onToggleRingsVisibility={onToggleRingsVisibility}
-                onTogglePlanetVisibility={onTogglePlanetVisibility}
-              />
             </div>
           )}
 
@@ -236,14 +268,48 @@ export function LifeNotesToolbar({
             <div className="add-info-section">
               <div className="add-info-header">
                 <h3 className="add-info-title">NOTE</h3>
-                <button
-                  type="button"
-                  onClick={onFullscreenToggle}
-                  className="fullscreen-btn"
-                  aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-                >
-                  {isFullscreen ? "dashboard" : "full-screen"}
-                </button>
+                <div className="header-controls">
+                  <button
+                    onClick={onToggleDatesVisibility}
+                    className={`toggle-btn${!areDatesVisible ? ' hide-state' : ''}`}
+                    title={areDatesVisible ? 'Hide Dates' : 'View Dates'}
+                  >
+                    DATES
+                  </button>
+                  
+                  <button
+                    onClick={onToggleNotesVisibility}
+                    className={`toggle-btn${!areNotesVisible ? ' hide-state' : ''}`}
+                    title={areNotesVisible ? 'Hide Notes' : 'View Notes'}
+                  >
+                    NOTES
+                  </button>
+                  
+                  <button
+                    onClick={onToggleRingsVisibility}
+                    className={`toggle-btn${!areRingsVisible ? ' hide-state' : ''}`}
+                    title={areRingsVisible ? 'Hide Rings' : 'View Rings'}
+                  >
+                    RINGS
+                  </button>
+                  
+                  <button
+                    onClick={onTogglePlanetVisibility}
+                    className={`toggle-btn${!isPlanetVisible ? ' hide-state' : ''}`}
+                    title={isPlanetVisible ? 'Hide Planet' : 'View Planet'}
+                  >
+                    PLANET
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={onFullscreenToggle}
+                    className="fullscreen-btn"
+                    aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                  >
+                    {isFullscreen ? "dashboard" : "full-screen"}
+                  </button>
+                </div>
               </div>
               <form onSubmit={onAddNote} className="add-info-form">
                 <div className="input-container">
@@ -408,17 +474,6 @@ export function LifeNotesToolbar({
                   onDayClick={onDayClick}
                 />
               </CalendarGrid>
-
-              <ToggleControls
-                areDatesVisible={areDatesVisible}
-                areNotesVisible={areNotesVisible}
-                areRingsVisible={areRingsVisible}
-                isPlanetVisible={isPlanetVisible}
-                onToggleDatesVisibility={onToggleDatesVisibility}
-                onToggleNotesVisibility={onToggleNotesVisibility}
-                onToggleRingsVisibility={onToggleRingsVisibility}
-                onTogglePlanetVisibility={onTogglePlanetVisibility}
-              />
             </div>
           )}
 
