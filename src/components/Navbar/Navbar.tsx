@@ -1,132 +1,113 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../lib/useAuth'
 import './Navbar.css'
 
 export function Navbar() {
   const { user, logout, loading } = useAuth()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const location = useLocation()
+  const [isNavbarOpen, setIsNavbarOpen] = useState(location.pathname === '/home')
 
-  // Close mobile menu when clicking outside
+  // Effect to open or close the navbar based on the current route
+  useEffect(() => {
+    setIsNavbarOpen(location.pathname === '/home')
+  }, [location.pathname])
+
+  // Close navbar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element
-      if (!target.closest('.nav-links') && !target.closest('.mobile-menu-toggle')) {
-        setIsMobileMenuOpen(false)
+      if (isNavbarOpen && !target.closest('.navbar') && !target.closest('.navbar-toggle-orb')) {
+        setIsNavbarOpen(false)
       }
     }
 
-    if (isMobileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [isMobileMenuOpen])
+  }, [isNavbarOpen])
 
-  // Close mobile menu when window is resized to desktop
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setIsMobileMenuOpen(false)
-      }
-    }
-
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
+  const toggleNavbar = () => {
+    setIsNavbarOpen(!isNavbarOpen)
   }
 
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false)
+  const closeNavbar = () => {
+    setIsNavbarOpen(false)
   }
 
   const handleLogout = async () => {
     try {
       await logout()
-      closeMobileMenu()
+      closeNavbar()
     } catch (error) {
       console.error('Logout error:', error)
     }
   }
 
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        {/* Mobile menu toggle */}
-        <button 
-          className={`mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''}`}
-          onClick={toggleMobileMenu}
-          aria-label="Toggle navigation menu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+    <>
+      <button
+        className={`navbar-toggle-orb ${isNavbarOpen ? 'open' : ''}`}
+        onClick={toggleNavbar}
+        aria-label={isNavbarOpen ? 'Close navigation' : 'Open navigation'}
+      />
+      <nav className={`navbar ${isNavbarOpen ? 'open' : ''}`}>
+        <div className="navbar-container">
+          <div className={`nav-links ${isNavbarOpen ? 'active' : ''}`}>
+            <Link
+              to="/home"
+              className="nav-link"
+              activeProps={{ className: 'nav-link active' }}
+              onClick={closeNavbar}
+            >
+              Home
+            </Link>
 
-        {/* Mobile menu overlay */}
-        <div 
-          className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}
-          onClick={closeMobileMenu}
-        ></div>
+            <Link
+              to="/life-notes"
+              className="nav-link"
+              activeProps={{ className: 'nav-link active' }}
+              onClick={closeNavbar}
+            >
+              Calendar
+            </Link>
 
-        <div className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
-          <Link
-            to="/home"
-            className="nav-link"
-            activeProps={{ className: 'nav-link active' }}
-            onClick={closeMobileMenu}
-          >
-            Home
-          </Link>
-
-          <Link
-            to="/life-notes"
-            className="nav-link"
-            activeProps={{ className: 'nav-link active' }}
-            onClick={closeMobileMenu}
-          >
-            Calendar
-          </Link>
-
-          <Link
-            to="/writing"
-            className="nav-link"
-            activeProps={{ className: 'nav-link active' }}
-            onClick={closeMobileMenu}
-          >
-            Writing
-          </Link>
-          
-          {/* User authentication section */}
-          {!loading && (
-            <div className="nav-auth-section">
-              {user ? (
-                <>
-                  <span className="nav-user-info">
-                    {user.is_guest ? 'Guest User' : `Welcome, ${user.username}`}
+            <Link
+              to="/writing"
+              className="nav-link"
+              activeProps={{ className: 'nav-link active' }}
+              onClick={closeNavbar}
+            >
+              Writing
+            </Link>
+            
+            {/* User authentication section */}
+            {!loading && (
+              <div className="nav-auth-section">
+                {user ? (
+                  <>
+                    <span className="nav-user-info">
+                      {user.is_guest ? 'Guest User' : `Welcome, ${user.username}`}
+                    </span>
+                    <button 
+                      onClick={handleLogout}
+                      className="nav-logout-btn"
+                      disabled={loading}
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <span className="nav-guest-info">
+                    Not logged in
                   </span>
-                  <button 
-                    onClick={handleLogout}
-                    className="nav-logout-btn"
-                    disabled={loading}
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <span className="nav-guest-info">
-                  Not logged in
-                </span>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   )
 } 

@@ -1,0 +1,262 @@
+/* WritingProcessor3D Component Styles */
+.writing-processor-container {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.writing-processor-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.writing-status-indicator {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #87CEEB;
+  border-radius: 6px;
+  color: #87CEEB;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+
+
+.tool-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tool-buttons .writing-toolbar-btn {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: center;
+  min-width: auto;
+  white-space: nowrap;
+}
+
+.tool-buttons .writing-toolbar-btn.active {
+  background: rgba(0, 255, 136, 0.2);
+  border-color: #00ff88;
+  color: #00ff88;
+}
+
+.zoom-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(135, 206, 235, 0.3);
+}
+
+.zoom-indicator {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #87CEEB;
+  letter-spacing: 0.1em;
+}
+
+.writing-help-panel {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 250px;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #87CEEB;
+  border-radius: 4px;
+  color: #87CEEB;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.writing-help-panel h3 {
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.writing-help-panel ul {
+  margin: 0;
+  padding-left: 1rem;
+  list-style-type: none;
+}
+
+.writing-help-panel li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.writing-help-panel kbd {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #555;
+  border-radius: 3px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.7rem;
+  color: #ffffff;
+}
+
+.writing-document-info {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #87CEEB;
+  border-radius: 4px;
+  color: #87CEEB;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  z-index: 100;
+  white-space: nowrap;
+}
+
+.writing-toolbar {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 0.5rem;
+  pointer-events: auto;
+}
+
+.writing-toolbar-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #87CEEB;
+  border-radius: 4px;
+  color: #87CEEB;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.writing-toolbar-btn:hover {
+  background: rgba(135, 206, 235, 0.2);
+  border-color: #ffffff;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.writing-toolbar-btn:active {
+  transform: translateY(0);
+}
+
+.writing-toolbar-btn.primary {
+  border-color: #00ff00;
+  color: #00ff00;
+}
+
+.writing-toolbar-btn.primary:hover {
+  background: rgba(0, 255, 0, 0.2);
+  border-color: #00ff00;
+  color: #00ff00;
+}
+
+.writing-toolbar-btn.danger {
+  border-color: #ff4444;
+  color: #ff4444;
+}
+
+.writing-toolbar-btn.danger:hover {
+  background: rgba(255, 68, 68, 0.2);
+  border-color: #ff4444;
+  color: #ff4444;
+}
+
+.writing-toolbar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.writing-toolbar-btn:disabled:hover {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: #87CEEB;
+  color: #87CEEB;
+  transform: none;
+}
+
+/* Hidden textarea for actual text input */
+.writing-input-hidden {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .writing-status-indicator {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    padding: 0.5rem;
+  }
+
+  .tool-buttons .writing-toolbar-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.65rem;
+  }
+
+  .writing-document-info {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    font-size: 0.65rem;
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .writing-status-indicator,
+  .writing-document-info {
+    font-size: 0.6rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .writing-toolbar-btn {
+    font-size: 0.6rem;
+    padding: 0.3rem 0.6rem;
+    min-width: 70px;
+  }
+}
