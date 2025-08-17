@@ -213,13 +213,14 @@
 
 /* Hidden textarea for actual text input */
 .writing-input-hidden {
-  position: absolute;
-  top: -9999px;
+  position: fixed;
   left: -9999px;
+  top: 50%;
   width: 1px;
   height: 1px;
-  opacity: 0;
-  pointer-events: none;
+  opacity: 0.01;
+  overflow: hidden;
+  z-index: -1000;
 }
 
 /* Mobile adjustments */

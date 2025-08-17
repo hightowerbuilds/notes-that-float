@@ -44,6 +44,50 @@ export interface Database {
           updated_at?: string
         }
       }
+      writing_documents: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          content: string
+          word_count: number
+          character_count: number
+          created_at: string
+          updated_at: string
+          last_opened: string
+          is_favorite: boolean
+          tags: string[]
+          metadata: Json
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title?: string
+          content?: string
+          word_count?: number
+          character_count?: number
+          created_at?: string
+          updated_at?: string
+          last_opened?: string
+          is_favorite?: boolean
+          tags?: string[]
+          metadata?: Json
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          content?: string
+          word_count?: number
+          character_count?: number
+          created_at?: string
+          updated_at?: string
+          last_opened?: string
+          is_favorite?: boolean
+          tags?: string[]
+          metadata?: Json
+        }
+      }
     }
     Views: {
       [_ in never]: never

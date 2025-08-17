@@ -1,14 +1,17 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, Text, Box } from '@react-three/drei'
+import { OrbitControls, Box, Html } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface WritingProcessor3DProps {
   content: string
   isActive: boolean
   onFocus: () => void
+  onContentChange: (newContent: string) => void
   cameraDistance: number
   alignCamera: number
+  selectAll: number
+  fontSize: number
 }
 
 // This component will manage the camera's zoom distance
@@ -23,137 +26,153 @@ function CameraManager({ distance }: { distance: number }) {
 
 // Removed WritingCore component as requested
 
-// Central Text Panel Component
+// Central Text Panel Component - Using HTML overlay for native text editing
 function CentralTextPanel({ 
   content, 
-  isActive, 
   onTextClick,
+  onContentChange,
+  selectAll,
+  fontSize,
 }: {
   content: string
-  isActive: boolean
   onTextClick: () => void
+  onContentChange: (newContent: string) => void
+  selectAll: number
+  fontSize: number
 }) {
   const panelRef = useRef<THREE.Group>(null)
-  const [displayText, setDisplayText] = useState(content || 'Click to start writing...')
-  const [selection, setSelection] = useState({ start: -1, end: -1 })
-  const isDragging = useRef(false)
-  const charPositions = useRef<{ x: number, y: number, char: string }[]>([])
+  const editorRef = useRef<HTMLDivElement>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [showPlaceholder, setShowPlaceholder] = useState(!content)
+  const lastContentRef = useRef<string>(content)
 
-  // Update display text when content changes
+  // Initialize content on mount
   useEffect(() => {
-    setDisplayText(content || 'Click to start writing...')
-  }, [content])
-
-  // Process text into lines
-  const lines = displayText.split('\n')
-  const maxCharsPerLine = 60
-  const processedLines: { text: string, fontSize: number }[][] = []
-  
-  const parseHTML = (html: string) => {
-    const segments: { text: string, fontSize: number }[] = []
-    const regex = /<span style="font-size: (.*?)em;">(.*?)<\/span>|(.*?)>/g
-    let match
-    while ((match = regex.exec(html)) !== null) {
-      if (match[1] && match[2]) {
-        segments.push({ text: match[2], fontSize: parseFloat(match[1]) * 0.2 })
-      } else if (match[3]) {
-        segments.push({ text: match[3], fontSize: 0.2 })
+    if (editorRef.current) {
+      if (content) {
+        editorRef.current.textContent = content
+        setShowPlaceholder(false)
+      } else {
+        editorRef.current.textContent = 'begin here...'
+        setShowPlaceholder(true)
       }
+      lastContentRef.current = content
     }
-    if (segments.length === 0) {
-      segments.push({ text: html, fontSize: 0.2 })
-    }
-    return segments
-  }
+  }, [])
 
-  lines.forEach(line => {
-    const lineSegments = parseHTML(line)
-    let currentLine: { text: string, fontSize: number }[] = []
-    let currentLineLength = 0
-    lineSegments.forEach(segment => {
-      const words = segment.text.split(' ')
-      words.forEach(word => {
-        if (currentLineLength + word.length <= maxCharsPerLine) {
-          currentLine.push({ text: (currentLineLength > 0 ? ' ' : '') + word, fontSize: segment.fontSize })
-          currentLineLength += (currentLineLength > 0 ? 1 : 0) + word.length
+  // Handle select all
+  useEffect(() => {
+    if (selectAll > 0 && editorRef.current) {
+      const range = document.createRange()
+      range.selectNodeContents(editorRef.current)
+      const selection = window.getSelection()
+      selection?.removeAllRanges()
+      selection?.addRange(range)
+    }
+  }, [selectAll])
+
+  // Update content when it changes externally (not from user input)
+  useEffect(() => {
+    if (editorRef.current && !isEditing) {
+      // Only update if content actually changed externally (not from our own input)
+      if (lastContentRef.current !== content && editorRef.current.textContent !== content) {
+        // Save cursor position
+        const selection = window.getSelection()
+        const range = selection?.rangeCount ? selection.getRangeAt(0) : null
+        const cursorOffset = range ? range.startOffset : 0
+        
+        // Update content and placeholder state
+        if (content) {
+          editorRef.current.textContent = content
+          setShowPlaceholder(false)
         } else {
-          if (currentLine.length > 0) processedLines.push(currentLine)
-          currentLine = [{ text: word, fontSize: segment.fontSize }]
-          currentLineLength = word.length
+          editorRef.current.textContent = 'begin here...'
+          setShowPlaceholder(true)
         }
-      })
-    })
-    if (currentLine.length > 0) processedLines.push(currentLine)
-  })
-
-  const cursorX = useMemo(() => {
-    if (processedLines.length === 0) return 0
-    const lastLine = processedLines[processedLines.length - 1]
-    if (!lastLine) return 0
-    let xOffset = 0
-    lastLine.forEach(segment => {
-      const charWidth = (segment.fontSize / 0.2) * 0.12
-      xOffset += segment.text.length * charWidth
-    })
-    return xOffset
-  }, [processedLines])
-
-  useEffect(() => {
-    charPositions.current.length = 0
-    let charIndex = 0
-    let xOffset = 0
-    processedLines.forEach((line, lineIndex) => {
-      xOffset = 0
-      line.forEach(segment => {
-        for (const char of segment.text) {
-          const charWidth = (segment.fontSize / 0.2) * 0.12
-          charPositions.current.push({ x: xOffset, y: -lineIndex * 0.35, char })
-          xOffset += charWidth
-          charIndex++
+        
+        // Restore cursor position if content isn't empty
+        if (content && selection && editorRef.current.firstChild) {
+          try {
+            const newRange = document.createRange()
+            const textNode = editorRef.current.firstChild
+            const maxOffset = Math.min(cursorOffset, textNode.textContent?.length || 0)
+            newRange.setStart(textNode, maxOffset)
+            newRange.setEnd(textNode, maxOffset)
+            selection.removeAllRanges()
+            selection.addRange(newRange)
+          } catch (e) {
+            // Fallback: place cursor at end
+            const newRange = document.createRange()
+            newRange.selectNodeContents(editorRef.current)
+            newRange.collapse(false)
+            selection.removeAllRanges()
+            selection.addRange(newRange)
+          }
         }
-      })
-      charIndex++
-    })
-  }, [processedLines])
-
-  const getCharIndexFromPosition = (position: THREE.Vector3) => {
-    let closestIndex = -1
-    let minDistance = Infinity
-    charPositions.current.forEach((charPos, index) => {
-      const distance = Math.sqrt(Math.pow(position.x - charPos.x, 2) + Math.pow(position.y - charPos.y, 2))
-      if (distance < minDistance) {
-        minDistance = distance
-        closestIndex = index
       }
-    })
-    return closestIndex
+    }
+    lastContentRef.current = content
+  }, [content, isEditing])
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    const newContent = e.currentTarget.textContent || ''
+    
+    // Don't save placeholder text as actual content
+    if (newContent === 'begin here...') {
+      return
+    }
+    
+    // Hide placeholder when user starts typing real content
+    if (newContent && showPlaceholder) {
+      setShowPlaceholder(false)
+    }
+    // Show placeholder when content becomes empty
+    if (!newContent && !showPlaceholder) {
+      setShowPlaceholder(true)
+    }
+    
+    lastContentRef.current = newContent // Update our ref immediately
+    onContentChange(newContent)
+    if (!isEditing) {
+      setIsEditing(true)
+    }
   }
 
-  const handlePointerDown = (e: any) => {
-    isDragging.current = true
-    const charIndex = getCharIndexFromPosition(e.point)
-    setSelection({ start: charIndex, end: charIndex })
+  const handleBlur = () => {
+    // Small delay to ensure any pending input changes are processed
+    setTimeout(() => {
+      setIsEditing(false)
+      
+      // If content is empty after user is done editing, show placeholder
+      if (editorRef.current && !editorRef.current.textContent?.trim()) {
+        editorRef.current.textContent = 'begin here...'
+        setShowPlaceholder(true)
+        onContentChange('') // Ensure parent knows content is empty
+      }
+    }, 100)
   }
 
-  const handlePointerMove = (e: any) => {
-    if (!isDragging.current) return
-    const charIndex = getCharIndexFromPosition(e.point)
-    setSelection(prev => ({ ...prev, end: charIndex }))
+  const handleFocus = () => {
+    setIsEditing(true)
+    onTextClick()
+    
+    // Clear placeholder when user focuses to type
+    if (showPlaceholder && editorRef.current) {
+      editorRef.current.textContent = ''
+      setShowPlaceholder(false)
+    }
   }
 
-  const handlePointerUp = () => {
-    isDragging.current = false
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // Handle Ctrl+S
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault()
+      // Save is handled by parent component
+    }
   }
 
   return (
-    <group 
-      ref={panelRef} 
-      position={[0, 0, 0]}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
-    >
+    <group ref={panelRef} position={[0, 0, 0]}>
       {/* Transparent background panel - minimal visibility */}
       <Box 
         args={[16, 12, 0.1]} 
@@ -170,78 +189,51 @@ function CentralTextPanel({
       >
         <meshStandardMaterial 
           color="#001122" 
-          opacity={0.05} 
+          opacity={0} 
           transparent 
           side={THREE.DoubleSide}
         />
       </Box>
 
-
-
-      {/* Text content */}
-      <group position={[-7.5, 5.5, 0]}>
-        {processedLines.map((line, lineIndex) => {
-          let xOffset = 0
-          return (
-            <group key={lineIndex} position={[0, -lineIndex * 0.35, 0.1]}>
-              {line.map((segment, segmentIndex) => {
-                const currentX = xOffset
-                const charWidth = (segment.fontSize / 0.2) * 0.12
-                const segmentWidth = segment.text.length * charWidth
-                xOffset += segmentWidth
-
-                return (
-                  <Text
-                    key={segmentIndex}
-                    position={[currentX, 0, 0]}
-                    fontSize={segment.fontSize}
-                    color="#87CEEB"
-                    anchorX="left"
-                    anchorY="top"
-                    font="/fonts/Courier.ttf"
-                  >
-                    {segment.text}
-                  </Text>
-                )
-              })}
-            </group>
-          )
-        })}
-        
-        {selection.start !== -1 && selection.end !== -1 && charPositions.current.length > selection.start && (
-          <Text
-            position={[charPositions.current[selection.start].x, charPositions.current[selection.start].y, 0.11]}
-            fontSize={0.2}
-            color="yellow"
-            anchorX="left"
-            anchorY="top"
-            font="/fonts/Courier.ttf"
-            maxWidth={15}
-          >
-            {displayText.substring(selection.start, selection.end + 1)}
-          </Text>
-        )}
-        
-                  {/* Animated cursor when active */}
-          {isActive && (
-            <Text
-              position={[
-                cursorX,
-                -(processedLines.length - 1) * 0.35,
-                0.1
-              ]}
-              fontSize={0.2}
-              color="#87CEEB"
-              anchorX="left"
-              anchorY="top"
-              font="/fonts/Courier.ttf"
-            >
-              |
-            </Text>
-          )}
-      </group>
-
-
+      {/* HTML overlay for native text editing */}
+      <Html
+        transform
+        distanceFactor={10}
+        position={[0, 0, 0.1]}
+        style={{
+          width: '800px',
+          height: '600px',
+        }}
+      >
+        <div
+          ref={editorRef}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleInput}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
+          onKeyDown={handleKeyDown}
+          style={{
+            width: '100%',
+            height: '100%',
+            padding: '20px',
+            fontSize: `${fontSize}px`,
+            fontFamily: 'Courier New, monospace',
+            color: showPlaceholder ? 'rgba(135, 206, 235, 0.5)' : '#87CEEB',
+            backgroundColor: 'transparent',
+            border: '1px solid #87CEEB',
+            borderRadius: '4px',
+            outline: 'none',
+            overflow: 'auto',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            cursor: 'text',
+            caretColor: '#87CEEB',
+            fontStyle: showPlaceholder ? 'italic' : 'normal',
+          }}
+        >
+        </div>
+      </Html>
     </group>
   )
 }
@@ -255,8 +247,19 @@ function WritingScene3D({
   content,
   isActive,
   onFocus,
+  onContentChange,
   alignCamera,
-}: Omit<WritingProcessor3DProps, 'cameraDistance'> & { alignCamera: number }) {
+  selectAll,
+  fontSize,
+}: {
+  content: string
+  isActive: boolean
+  onFocus: () => void
+  onContentChange: (newContent: string) => void
+  alignCamera: number
+  selectAll: number
+  fontSize: number
+}) {
   const controlsRef = useRef<any>(null)
 
   useEffect(() => {
@@ -272,15 +275,15 @@ function WritingScene3D({
   }
 
   return (
-    <>
-      {/* Central Text Panel - clean and minimal */}
+    <group>
       <CentralTextPanel 
         content={content}
-        isActive={isActive}
         onTextClick={handleTextClick}
+        onContentChange={onContentChange}
+        selectAll={selectAll}
+        fontSize={fontSize}
       />
       
-      {/* Clean, minimal lighting */}
       <ambientLight intensity={0.6} />
       <pointLight position={[10, 10, 10]} intensity={1.0} />
       <pointLight position={[-10, -10, -10]} intensity={0.6} />
@@ -290,13 +293,13 @@ function WritingScene3D({
         ref={controlsRef}
         target={[0, 0, 0]}
         enablePan={true}
-        enableZoom={false} // Manual zoom is disabled
+        enableZoom={false}
         enableRotate={true}
         autoRotate={false}
         maxPolarAngle={Math.PI * 0.9}
         minPolarAngle={Math.PI * 0.1}
       />
-    </>
+    </group>
   )
 }
 
@@ -305,8 +308,11 @@ export function WritingProcessor3D({
   content,
   isActive,
   onFocus,
+  onContentChange,
   cameraDistance,
   alignCamera,
+  selectAll,
+  fontSize,
 }: WritingProcessor3DProps) {
   return (
     <div style={{ width: '100%', height: '100%', background: 'transparent' }}>
@@ -319,7 +325,15 @@ export function WritingProcessor3D({
           background: 'transparent'
         }}
       >
-        <WritingScene3D content={content} isActive={isActive} onFocus={onFocus} alignCamera={alignCamera} />
+        <WritingScene3D 
+          content={content} 
+          isActive={isActive} 
+          onFocus={onFocus} 
+          onContentChange={onContentChange}
+          alignCamera={alignCamera} 
+          selectAll={selectAll}
+          fontSize={fontSize}
+        />
         <CameraManager distance={cameraDistance} />
       </Canvas>
     </div>
