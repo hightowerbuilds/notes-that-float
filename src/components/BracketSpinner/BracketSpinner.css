@@ -1,0 +1,46 @@
+.save-status-container .bracket-spinner {
+  font-size: 0.7rem !important;
+  font-family: 'Courier New', monospace !important;
+  padding: 0.25rem 0;
+  text-align: center;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.save-status-container .bracket-char {
+  font-size: 0.5rem !important; /* Much smaller */
+  font-weight: bold;
+  transition: transform 0.2s ease;
+  color: #ff00ff !important; /* Bright magenta to ensure visibility */
+}
+
+.save-status-container .spinner-text {
+  font-size: 0.7rem !important;
+  color: #87CEEB !important;
+}
+
+.save-status-container .bracket-spinner.saving .bracket-char {
+  color: #00ff00 !important; /* Bright green for saving */
+  animation: pulse 0.5s ease-in-out infinite alternate;
+}
+
+.save-status-container .bracket-spinner.unsaved .bracket-char {
+  color: #ffcc00 !important;
+}
+
+.save-status-container .bracket-spinner.error .bracket-char {
+  color: #ff4444 !important;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}

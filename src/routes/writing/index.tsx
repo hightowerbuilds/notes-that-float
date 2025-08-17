@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect, useRef } from 'react'
 import { Navbar } from '../../components/Navbar/Navbar'
 import { WritingProcessor3D } from '../../components/WritingProcessor/WritingProcessor3D'
+import { BracketSpinner } from '../../components/BracketSpinner/BracketSpinner'
 import { useAuth } from '../../lib/useAuth'
 import { Canvas } from '@react-three/fiber'
 import { Stars } from '@react-three/drei'
@@ -16,6 +17,7 @@ import {
 import type { Database } from '../../lib/database.types'
 import './writing.css'
 import '../../components/WritingProcessor/WritingProcessor3D.css'
+import '../../components/BracketSpinner/BracketSpinner.css'
 
 type WritingDocument = Database['public']['Tables']['writing_documents']['Row']
 
@@ -575,13 +577,13 @@ function Writing() {
                 title="Save Document (Ctrl+S)"
                     disabled={isSaving || user.is_guest}
                   >
-                    {isSaving ? 'SAVING...' : 'SAVE'}
+                    {isSaving ? <BracketSpinner type="saving" text="SAVING" /> : 'SAVE'}
                   </button>
                   {saveStatus !== 'saved' && !user.is_guest && (
-                    <div className={`save-status ${saveStatus}`}>
-                      {saveStatus === 'saving' && '○ Saving...'}
-                      {saveStatus === 'unsaved' && '● Unsaved changes'}
-                      {saveStatus === 'error' && '✕ Save failed'}
+                    <div className="save-status-container">
+                      {saveStatus === 'saving' && <BracketSpinner type="saving" text="Saving..." />}
+                      {saveStatus === 'unsaved' && <BracketSpinner type="unsaved" text="Unsaved changes" />}
+                      {saveStatus === 'error' && <BracketSpinner type="error" text="Save failed" />}
                     </div>
                   )}
                   <button 

@@ -1,4 +1,4 @@
-import { Link, useLocation } from '@tanstack/react-router'
+import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../lib/useAuth'
 import './Navbar.css'
@@ -6,6 +6,7 @@ import './Navbar.css'
 export function Navbar() {
   const { user, logout, loading } = useAuth()
   const location = useLocation()
+  const navigate = useNavigate()
   const [isNavbarOpen, setIsNavbarOpen] = useState(location.pathname === '/home')
 
   // Effect to open or close the navbar based on the current route
@@ -40,6 +41,7 @@ export function Navbar() {
     try {
       await logout()
       closeNavbar()
+      navigate({ to: '/home' })
     } catch (error) {
       console.error('Logout error:', error)
     }

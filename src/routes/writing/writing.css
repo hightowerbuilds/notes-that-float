@@ -409,6 +409,7 @@
 }
 
 .loading,
+.loading-text,
 .no-documents {
   text-align: center;
   color: rgba(135, 206, 235, 0.6);
@@ -418,24 +419,18 @@
   font-style: italic;
 }
 
+/* Document Loading Spinner */
+.document-loading-spinner {
+  text-align: center;
+  padding: 0.5rem;
+  color: #87CEEB;
+  font-size: 0.8rem;
+}
+
 /* Save Status Styles */
-.save-status {
-  font-size: 0.7rem;
-  font-family: 'Courier New', monospace;
+.save-status-container {
   padding: 0.25rem 0;
   text-align: center;
-}
-
-.save-status.saving {
-  color: #87CEEB;
-}
-
-.save-status.unsaved {
-  color: #ffcc00;
-}
-
-.save-status.error {
-  color: #ff4444;
 }
 
 .writing-toolbar-btn.saving {
