@@ -46,9 +46,10 @@ function CentralTextPanel({
   const [showPlaceholder, setShowPlaceholder] = useState(!content)
   const lastContentRef = useRef<string>(content)
 
-  // Initialize content on mount
+  // Initialize content on mount and when content prop changes (but only if not actively editing)
   useEffect(() => {
-    if (editorRef.current) {
+    if (editorRef.current && !isEditing) {
+      console.log('3D Editor: Initializing content with', content.length, 'characters')
       if (content) {
         editorRef.current.textContent = content
         setShowPlaceholder(false)
@@ -58,7 +59,7 @@ function CentralTextPanel({
       }
       lastContentRef.current = content
     }
-  }, [])
+  }, [content, isEditing])
 
   // Handle select all
   useEffect(() => {
@@ -116,9 +117,11 @@ function CentralTextPanel({
 
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     const newContent = e.currentTarget.textContent || ''
+    console.log('3D Editor: Input event - content length:', newContent.length, 'is placeholder?', newContent === 'begin here...')
     
     // Don't save placeholder text as actual content
     if (newContent === 'begin here...') {
+      console.log('3D Editor: Ignoring placeholder text')
       return
     }
     
@@ -132,6 +135,7 @@ function CentralTextPanel({
     }
     
     lastContentRef.current = newContent // Update our ref immediately
+    console.log('3D Editor: Calling onContentChange with:', newContent.length, 'characters')
     onContentChange(newContent)
     if (!isEditing) {
       setIsEditing(true)
@@ -147,7 +151,14 @@ function CentralTextPanel({
       if (editorRef.current && !editorRef.current.textContent?.trim()) {
         editorRef.current.textContent = 'begin here...'
         setShowPlaceholder(true)
-        onContentChange('') // Ensure parent knows content is empty
+        // Only send empty content change if the current content prop is also empty
+        // This prevents sending empty content when a document was just loaded
+        if (!content || content.trim() === '') {
+          console.log('3D Editor: Sending empty content on blur')
+          onContentChange('') // Ensure parent knows content is empty
+        } else {
+          console.log('3D Editor: Not sending empty content - document content exists')
+        }
       }
     }, 100)
   }
