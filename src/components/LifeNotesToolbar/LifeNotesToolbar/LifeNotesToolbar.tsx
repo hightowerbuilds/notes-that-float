@@ -1,8 +1,8 @@
 import React, { useState, useRef, useCallback } from 'react'
 import './LifeNotesToolbar.css'
-import { BottomControls } from './BottomControls'
-import { CalendarGrid } from './CalendarGrid'
-import { NotesDirectory } from './NotesDirectory' 
+import { BottomControls } from '../BottomControls/BottomControls'
+import { CalendarGrid } from '../CalendarGrid/CalendarGrid'
+import { NotesDirectory } from '../NotesDirectory/NotesDirectory' 
 
 
 interface Note {

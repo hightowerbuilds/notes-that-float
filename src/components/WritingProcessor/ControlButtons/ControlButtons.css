@@ -1,0 +1,91 @@
+/* ControlButtons styles */
+.control-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.writing-toolbar-btn {
+  background: rgba(135, 206, 235, 0.1);
+  border: 1px solid #87CEEB;
+  color: #87CEEB;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.writing-toolbar-btn:hover:not(:disabled) {
+  background: rgba(135, 206, 235, 0.2);
+  transform: translateY(-1px);
+}
+
+.writing-toolbar-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.writing-toolbar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.writing-toolbar-btn.primary {
+  background: rgba(135, 206, 235, 0.3);
+  font-weight: bold;
+}
+
+.writing-toolbar-btn.danger {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.writing-toolbar-btn.danger:hover:not(:disabled) {
+  background: rgba(255, 107, 107, 0.2);
+}
+
+.writing-toolbar-btn.saving {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.writing-toolbar-btn.small {
+  padding: 4px 8px;
+  font-size: 10px;
+  min-width: 32px;
+}
+
+.save-status-container {
+  font-size: 11px;
+  color: #b0c4de;
+  font-style: italic;
+  margin: -4px 0 4px 0;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.control-label {
+  font-size: 10px;
+  color: #778899;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.control-buttons-inline {
+  display: flex;
+  gap: 4px;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

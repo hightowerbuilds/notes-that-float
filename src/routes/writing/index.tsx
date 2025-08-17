@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect, useRef } from 'react'
 import { Navbar } from '../../components/Navbar/Navbar'
-import { WritingProcessor3D } from '../../components/WritingProcessor/WritingProcessor3D'
-import { BracketSpinner } from '../../components/BracketSpinner/BracketSpinner'
+import { WritingProcessor3D } from '../../components/WritingProcessor/WritingProcessor3D/WritingProcessor3D'
+import { WritingSidebar } from '../../components/WritingProcessor/WritingSidebar/WritingSidebar'
 import { useAuth } from '../../lib/useAuth'
 import { Canvas } from '@react-three/fiber'
 import { Stars } from '@react-three/drei'
@@ -11,13 +11,10 @@ import {
   saveDocument, 
   loadDocument, 
   deleteDocument,
-  generateTitleFromContent,
-  formatDocumentDate 
+  generateTitleFromContent 
 } from '../../lib/writingDocuments'
 import type { Database } from '../../lib/database.types'
 import './writing.css'
-import '../../components/WritingProcessor/WritingProcessor3D.css'
-import '../../components/BracketSpinner/BracketSpinner.css'
 
 type WritingDocument = Database['public']['Tables']['writing_documents']['Row']
 
@@ -501,179 +498,41 @@ function Writing() {
 
       {user && (
         <div>
-          <div className="writing-sidebar" style={{ width: `${sidebarWidth}px` }}>
-            <div className="sidebar-content">
-              {!user.is_guest && (
-                <div className="documents-directory">
-                  <div className="documents-directory-header">
-                    <span className="directory-icon">📁</span>
-                    <span>Documents ({documents.length})</span>
-                  </div>
-                  {isLoading ? (
-                    <div className="loading">Loading documents...</div>
-                  ) : (
-                    <div className="documents-list">
-                      {documents.length === 0 ? (
-                        <div className="no-documents">No documents yet</div>
-                      ) : (
-                        documents.map((doc) => {
-                          const previewText = doc.content
-                            ? doc.content.trim().split(/\s+/).slice(0, 30).join(' ') + (doc.content.trim().split(/\s+/).length > 30 ? '...' : '')
-                            : 'Empty document'
-                          
-                          return (
-                            <div 
-                              key={doc.id} 
-                              className={`document-item ${currentDocument?.id === doc.id ? 'active' : ''}`}
-                              onClick={() => handleLoadDocument(doc)}
-                            >
-                              <span className="document-icon">📄</span>
-                              <div className="document-content">
-                                <div className="document-title">{doc.title}</div>
-                                <div className="document-preview">{previewText}</div>
-                                <div className="document-meta">
-                                  <span>{formatDocumentDate(doc.updated_at)}</span>
-                                  <span>•</span>
-                                  <span>{doc.word_count} words</span>
-                                </div>
-                              </div>
-                              <div className="document-actions">
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleDeleteDocument(doc.id)
-                                  }}
-                                  className="delete-btn"
-                                  title="Delete document"
-                                >
-                                  ✕
-                                </button>
-                              </div>
-                            </div>
-                          )
-                        })
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div className="sidebar-section">
-                <div className="document-stats-section">
-                  {currentDocument && (
-                    <div className="current-document-title">
-                      📄 {documentTitle}
-                    </div>
-                  )}
-                  <div className="document-stats">
-                    {content.split(' ').filter(w => w.length > 0).length} words | {content.length} chars
-                    {user.is_guest && ' | Guest Mode'}
-                  </div>
-                </div>
-                <div className="control-buttons">
-              <button 
-                onClick={handleSave}
-                    className={`writing-toolbar-btn primary ${isSaving ? 'saving' : ''}`}
-                title="Save Document (Ctrl+S)"
-                    disabled={isSaving || user.is_guest}
-                  >
-                    {isSaving ? <BracketSpinner type="saving" text="SAVING" /> : 'SAVE'}
-                  </button>
-                  {saveStatus !== 'saved' && !user.is_guest && (
-                    <div className="save-status-container">
-                      {saveStatus === 'saving' && <BracketSpinner type="saving" text="Saving..." />}
-                      {saveStatus === 'unsaved' && <BracketSpinner type="unsaved" text="Unsaved changes" />}
-                      {saveStatus === 'error' && <BracketSpinner type="error" text="Save failed" />}
-                    </div>
-                  )}
-                  <button 
-                    onClick={handleNewDocument}
-                    className="writing-toolbar-btn"
-                    title="New Document"
-                    disabled={user.is_guest}
-                  >
-                    NEW
-              </button>
-              <button 
-                onClick={handleClear}
-                className="writing-toolbar-btn danger"
-                title="Clear All Content"
-              >
-                CLEAR
-              </button>
-              <button 
-                onClick={handleExport}
-                className="writing-toolbar-btn"
-                title="Export as Text File"
-              >
-                EXPORT
-              </button>
-              <button
-                onClick={handleAlign}
-                className="writing-toolbar-btn"
-                title="Align Camera"
-              >
-                ALIGN
-              </button>
-                  <div className="control-group">
-                    <span className="control-label">ZOOM</span>
-                    <div className="control-buttons-inline">
-                <button 
-                  onClick={handleZoomOut}
-                        className="writing-toolbar-btn small"
-                  title="Zoom Out"
-                >
-                  -
-                </button>
-                <button 
-                  onClick={handleZoomIn}
-                        className="writing-toolbar-btn small"
-                  title="Zoom In"
-                >
-                  +
-                </button>
-              </div>
-                  </div>
-                  <div className="control-group">
-                    <span className="control-label">FONT SIZE</span>
-                    <div className="control-buttons-inline">
-                <button
-                  onClick={() => handleFontSizeChange('decrease')}
-                        className="writing-toolbar-btn small"
-                  title="Decrease Font Size"
-                >
-                  A-
-                </button>
-                <button
-                  onClick={() => handleFontSizeChange('increase')}
-                        className="writing-toolbar-btn small"
-                  title="Increase Font Size"
-                >
-                  A+
-                </button>
-              </div>
-            </div>
-          </div>
-              </div>
-            </div>
-            <div 
-              className="sidebar-resize-handle" 
-              onMouseDown={handleMouseDown}
-              style={{ cursor: isDragging ? 'col-resize' : 'col-resize' }}
-            />
-          </div>
+          <WritingSidebar
+            user={user}
+            sidebarWidth={sidebarWidth}
+            isDragging={isDragging}
+            onMouseDown={handleMouseDown}
+            documents={documents}
+            currentDocument={currentDocument}
+            documentTitle={documentTitle}
+            isLoading={isLoading}
+            content={content}
+            onLoadDocument={handleLoadDocument}
+            onDeleteDocument={handleDeleteDocument}
+            onSave={handleSave}
+            isSaving={isSaving}
+            saveStatus={saveStatus}
+            onNewDocument={handleNewDocument}
+            onClear={handleClear}
+            onExport={handleExport}
+            onAlign={handleAlign}
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
+            onFontSizeChange={handleFontSizeChange}
+          />
 
           <div className="writing-3d-container" style={{ left: `${sidebarWidth}px`, width: `calc(100vw - ${sidebarWidth}px)` }}>
-          <WritingProcessor3D
-            content={content}
-            isActive={isEditorActive}
-            onFocus={handleEditorFocus}
-            onContentChange={handleContentChange}
-            cameraDistance={cameraDistance}
-            alignCamera={alignCamera}
-            selectAll={selectAll}
-            fontSize={fontSize}
-          />
+            <WritingProcessor3D
+              content={content}
+              isActive={isEditorActive}
+              onFocus={handleEditorFocus}
+              onContentChange={handleContentChange}
+              cameraDistance={cameraDistance}
+              alignCamera={alignCamera}
+              selectAll={selectAll}
+              fontSize={fontSize}
+            />
           </div>
         </div>
       )}

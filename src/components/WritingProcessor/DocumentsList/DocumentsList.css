@@ -1,0 +1,60 @@
+/* DocumentsList styles */
+.documents-directory {
+  margin-bottom: 20px;
+}
+
+.documents-directory-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #87CEEB;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(135, 206, 235, 0.3);
+}
+
+.directory-icon {
+  font-size: 16px;
+}
+
+.documents-list {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #87CEEB rgba(255, 255, 255, 0.1);
+}
+
+.documents-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.documents-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.documents-list::-webkit-scrollbar-thumb {
+  background: #87CEEB;
+  border-radius: 3px;
+}
+
+.documents-list::-webkit-scrollbar-thumb:hover {
+  background: #a0d4f0;
+}
+
+.loading {
+  color: #b0c4de;
+  font-style: italic;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.no-documents {
+  color: #778899;
+  font-style: italic;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 12px;
+}

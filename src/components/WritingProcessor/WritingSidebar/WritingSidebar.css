@@ -1,0 +1,78 @@
+/* WritingSidebar styles */
+.writing-sidebar {
+  position: fixed;
+  left: 0;
+  top: 60px; /* Account for navbar */
+  height: calc(100vh - 60px);
+  background: rgba(0, 17, 34, 0.95);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(135, 206, 235, 0.3);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #87CEEB rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+  background: #87CEEB;
+  border-radius: 3px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: #a0d4f0;
+}
+
+.sidebar-section {
+  border-top: 1px solid rgba(135, 206, 235, 0.2);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.sidebar-section:first-child {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.sidebar-resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: rgba(135, 206, 235, 0.3);
+  cursor: col-resize;
+  transition: background 0.2s ease;
+}
+
+.sidebar-resize-handle:hover {
+  background: rgba(135, 206, 235, 0.5);
+}
+
+@media (max-width: 768px) {
+  .writing-sidebar {
+    width: 100% !important;
+    max-width: 320px;
+  }
+  
+  .sidebar-resize-handle {
+    display: none;
+  }
+}

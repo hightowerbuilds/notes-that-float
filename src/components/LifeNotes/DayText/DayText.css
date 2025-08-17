@@ -1,0 +1,7 @@
+/* DayText component styles */
+/* This component is primarily rendered in 3D space using Three.js */
+/* Most styling is handled via Three.js materials and properties */
+
+.day-text-container {
+  /* Reserved for future HTML overlay elements if needed */
+}

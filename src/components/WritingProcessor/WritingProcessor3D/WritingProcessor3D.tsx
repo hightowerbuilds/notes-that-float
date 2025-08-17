@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Box, Html } from '@react-three/drei'
 import * as THREE from 'three'
+import './WritingProcessor3D.css'
 
 interface WritingProcessor3DProps {
   content: string

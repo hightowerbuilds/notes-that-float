@@ -412,9 +412,9 @@
 .loading-text,
 .no-documents {
   text-align: center;
-  color: rgba(135, 206, 235, 0.6);
+  color: #ff0000;
   font-family: 'Courier New', monospace;
-  font-size: 0.8rem;
+  font-size: 0.2rem;
   padding: 2rem 0;
   font-style: italic;
 }
@@ -424,7 +424,7 @@
   text-align: center;
   padding: 0.5rem;
   color: #87CEEB;
-  font-size: 0.8rem;
+  font-size: 0.2rem;
 }
 
 /* Save Status Styles */

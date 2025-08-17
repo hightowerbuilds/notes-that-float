@@ -1,0 +1,12 @@
+/* PlanetScene component styles */
+/* This component is primarily rendered in 3D space using Three.js */
+/* Most styling is handled via Three.js materials and properties */
+
+.planet-scene-container {
+  /* Reserved for future HTML overlay elements if needed */
+}
+
+/* Shader-related styles could be defined here if needed for HTML overlays */
+.planet-gradient {
+  /* Custom gradient styles if needed for HTML elements */
+}

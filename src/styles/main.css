@@ -110,8 +110,8 @@ body {
 /* Loading Animation */
 .loading {
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
   border: 3px solid var(--border-color);
   border-top: 3px solid var(--primary-bg);
   border-radius: 50%;
