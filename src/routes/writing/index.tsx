@@ -17,6 +17,7 @@ function Writing() {
   const [content, setContent] = useState('')
   const [isEditorActive, setIsEditorActive] = useState(false)
   const [cameraDistance, setCameraDistance] = useState(15) // Default distance
+  const [alignCamera, setAlignCamera] = useState(0)
   const hiddenInputRef = useRef<HTMLTextAreaElement>(null)
 
     // Handle keyboard shortcuts when editor is active
@@ -87,6 +88,15 @@ function Writing() {
     setCameraDistance(prev => Math.min(prev + 2, 30)) // Zoom out, but not too far
   }
 
+  const handleAlign = () => {
+    setAlignCamera(c => c + 1)
+  }
+
+  const handleFontSizeChange = (direction: 'increase' | 'decrease') => {
+    console.log(`Font size change: ${direction}`)
+    // Logic to be implemented later
+  }
+
   return (
     <div className={`page-container ${!user ? 'no-navbar' : ''}`}>
       {user && <Navbar />}
@@ -149,6 +159,13 @@ function Writing() {
               >
                 EXPORT
               </button>
+              <button
+                onClick={handleAlign}
+                className="writing-toolbar-btn"
+                title="Align Camera"
+              >
+                ALIGN
+              </button>
               
               {/* Zoom Controls */}
               <div className="zoom-controls">
@@ -168,6 +185,25 @@ function Writing() {
                   +
                 </button>
               </div>
+
+              {/* Font Size Controls */}
+              <div className="font-size-controls">
+                <button
+                  onClick={() => handleFontSizeChange('decrease')}
+                  className="writing-toolbar-btn"
+                  title="Decrease Font Size"
+                >
+                  A-
+                </button>
+                <span className="font-size-indicator">SIZE</span>
+                <button
+                  onClick={() => handleFontSizeChange('increase')}
+                  className="writing-toolbar-btn"
+                  title="Increase Font Size"
+                >
+                  A+
+                </button>
+              </div>
             </div>
           </div>
 
@@ -184,6 +220,7 @@ function Writing() {
             isActive={isEditorActive}
             onFocus={handleEditorFocus}
             cameraDistance={cameraDistance}
+            alignCamera={alignCamera}
           />
         </>
       )}

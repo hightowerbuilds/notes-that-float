@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Text, Box } from '@react-three/drei'
 import * as THREE from 'three'
@@ -8,6 +8,7 @@ interface WritingProcessor3DProps {
   isActive: boolean
   onFocus: () => void
   cameraDistance: number
+  alignCamera: number
 }
 
 // This component will manage the camera's zoom distance
@@ -26,7 +27,7 @@ function CameraManager({ distance }: { distance: number }) {
 function CentralTextPanel({ 
   content, 
   isActive, 
-  onTextClick
+  onTextClick,
 }: {
   content: string
   isActive: boolean
@@ -34,6 +35,9 @@ function CentralTextPanel({
 }) {
   const panelRef = useRef<THREE.Group>(null)
   const [displayText, setDisplayText] = useState(content || 'Click to start writing...')
+  const [selection, setSelection] = useState({ start: -1, end: -1 })
+  const isDragging = useRef(false)
+  const charPositions = useRef<{ x: number, y: number, char: string }[]>([])
 
   // Update display text when content changes
   useEffect(() => {
@@ -43,28 +47,113 @@ function CentralTextPanel({
   // Process text into lines
   const lines = displayText.split('\n')
   const maxCharsPerLine = 60
-  const processedLines: string[] = []
+  const processedLines: { text: string, fontSize: number }[][] = []
   
+  const parseHTML = (html: string) => {
+    const segments: { text: string, fontSize: number }[] = []
+    const regex = /<span style="font-size: (.*?)em;">(.*?)<\/span>|(.*?)>/g
+    let match
+    while ((match = regex.exec(html)) !== null) {
+      if (match[1] && match[2]) {
+        segments.push({ text: match[2], fontSize: parseFloat(match[1]) * 0.2 })
+      } else if (match[3]) {
+        segments.push({ text: match[3], fontSize: 0.2 })
+      }
+    }
+    if (segments.length === 0) {
+      segments.push({ text: html, fontSize: 0.2 })
+    }
+    return segments
+  }
+
   lines.forEach(line => {
-    if (line.length <= maxCharsPerLine) {
-      processedLines.push(line)
-    } else {
-      const words = line.split(' ')
-      let currentLine = ''
+    const lineSegments = parseHTML(line)
+    let currentLine: { text: string, fontSize: number }[] = []
+    let currentLineLength = 0
+    lineSegments.forEach(segment => {
+      const words = segment.text.split(' ')
       words.forEach(word => {
-        if ((currentLine + word).length <= maxCharsPerLine) {
-          currentLine += (currentLine ? ' ' : '') + word
+        if (currentLineLength + word.length <= maxCharsPerLine) {
+          currentLine.push({ text: (currentLineLength > 0 ? ' ' : '') + word, fontSize: segment.fontSize })
+          currentLineLength += (currentLineLength > 0 ? 1 : 0) + word.length
         } else {
-          if (currentLine) processedLines.push(currentLine)
-          currentLine = word
+          if (currentLine.length > 0) processedLines.push(currentLine)
+          currentLine = [{ text: word, fontSize: segment.fontSize }]
+          currentLineLength = word.length
         }
       })
-      if (currentLine) processedLines.push(currentLine)
-    }
+    })
+    if (currentLine.length > 0) processedLines.push(currentLine)
   })
 
+  const cursorX = useMemo(() => {
+    if (processedLines.length === 0) return 0
+    const lastLine = processedLines[processedLines.length - 1]
+    if (!lastLine) return 0
+    let xOffset = 0
+    lastLine.forEach(segment => {
+      const charWidth = (segment.fontSize / 0.2) * 0.12
+      xOffset += segment.text.length * charWidth
+    })
+    return xOffset
+  }, [processedLines])
+
+  useEffect(() => {
+    charPositions.current.length = 0
+    let charIndex = 0
+    let xOffset = 0
+    processedLines.forEach((line, lineIndex) => {
+      xOffset = 0
+      line.forEach(segment => {
+        for (const char of segment.text) {
+          const charWidth = (segment.fontSize / 0.2) * 0.12
+          charPositions.current.push({ x: xOffset, y: -lineIndex * 0.35, char })
+          xOffset += charWidth
+          charIndex++
+        }
+      })
+      charIndex++
+    })
+  }, [processedLines])
+
+  const getCharIndexFromPosition = (position: THREE.Vector3) => {
+    let closestIndex = -1
+    let minDistance = Infinity
+    charPositions.current.forEach((charPos, index) => {
+      const distance = Math.sqrt(Math.pow(position.x - charPos.x, 2) + Math.pow(position.y - charPos.y, 2))
+      if (distance < minDistance) {
+        minDistance = distance
+        closestIndex = index
+      }
+    })
+    return closestIndex
+  }
+
+  const handlePointerDown = (e: any) => {
+    isDragging.current = true
+    const charIndex = getCharIndexFromPosition(e.point)
+    setSelection({ start: charIndex, end: charIndex })
+  }
+
+  const handlePointerMove = (e: any) => {
+    if (!isDragging.current) return
+    const charIndex = getCharIndexFromPosition(e.point)
+    setSelection(prev => ({ ...prev, end: charIndex }))
+  }
+
+  const handlePointerUp = () => {
+    isDragging.current = false
+  }
+
   return (
-    <group ref={panelRef} position={[0, 0, 0]}>
+    <group 
+      ref={panelRef} 
+      position={[0, 0, 0]}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerUp}
+    >
       {/* Transparent background panel - minimal visibility */}
       <Box 
         args={[16, 12, 0.1]} 
@@ -91,26 +180,53 @@ function CentralTextPanel({
 
       {/* Text content */}
       <group position={[-7.5, 5.5, 0]}>
-        {processedLines.map((line, index) => (
+        {processedLines.map((line, lineIndex) => {
+          let xOffset = 0
+          return (
+            <group key={lineIndex} position={[0, -lineIndex * 0.35, 0.1]}>
+              {line.map((segment, segmentIndex) => {
+                const currentX = xOffset
+                const charWidth = (segment.fontSize / 0.2) * 0.12
+                const segmentWidth = segment.text.length * charWidth
+                xOffset += segmentWidth
+
+                return (
+                  <Text
+                    key={segmentIndex}
+                    position={[currentX, 0, 0]}
+                    fontSize={segment.fontSize}
+                    color="#87CEEB"
+                    anchorX="left"
+                    anchorY="top"
+                    font="/fonts/Courier.ttf"
+                  >
+                    {segment.text}
+                  </Text>
+                )
+              })}
+            </group>
+          )
+        })}
+        
+        {selection.start !== -1 && selection.end !== -1 && charPositions.current.length > selection.start && (
           <Text
-            key={index}
-            position={[0, -index * 0.35, 0.1]}
+            position={[charPositions.current[selection.start].x, charPositions.current[selection.start].y, 0.11]}
             fontSize={0.2}
-            color="#87CEEB"
+            color="yellow"
             anchorX="left"
             anchorY="top"
             font="/fonts/Courier.ttf"
             maxWidth={15}
           >
-            {line}
+            {displayText.substring(selection.start, selection.end + 1)}
           </Text>
-        ))}
+        )}
         
                   {/* Animated cursor when active */}
           {isActive && (
             <Text
               position={[
-                (processedLines[processedLines.length - 1]?.length || 0) * 0.12,
+                cursorX,
                 -(processedLines.length - 1) * 0.35,
                 0.1
               ]}
@@ -139,7 +255,15 @@ function WritingScene3D({
   content,
   isActive,
   onFocus,
-}: Omit<WritingProcessor3DProps, 'cameraDistance'>) {
+  alignCamera,
+}: Omit<WritingProcessor3DProps, 'cameraDistance'> & { alignCamera: number }) {
+  const controlsRef = useRef<any>(null)
+
+  useEffect(() => {
+    if (alignCamera > 0 && controlsRef.current) {
+      controlsRef.current.reset()
+    }
+  }, [alignCamera])
   
   const handleTextClick = () => {
     if (!isActive) {
@@ -163,6 +287,7 @@ function WritingScene3D({
       <pointLight position={[0, 10, 0]} intensity={0.8} />
       
       <OrbitControls
+        ref={controlsRef}
         target={[0, 0, 0]}
         enablePan={true}
         enableZoom={false} // Manual zoom is disabled
@@ -175,14 +300,16 @@ function WritingScene3D({
   )
 }
 
+// Main 3D Writing Processor Component
 export function WritingProcessor3D({
   content,
   isActive,
   onFocus,
   cameraDistance,
+  alignCamera,
 }: WritingProcessor3DProps) {
   return (
-    <div style={{ width: '100%', height: '100vh', background: 'transparent' }}>
+    <div style={{ width: '100%', height: '100%', background: 'transparent' }}>
       <Canvas
         // Set the initial camera position, but updates are now handled by CameraManager
         camera={{ position: [0, 0, cameraDistance], fov: 60 }}
@@ -192,7 +319,7 @@ export function WritingProcessor3D({
           background: 'transparent'
         }}
       >
-        <WritingScene3D content={content} isActive={isActive} onFocus={onFocus} />
+        <WritingScene3D content={content} isActive={isActive} onFocus={onFocus} alignCamera={alignCamera} />
         <CameraManager distance={cameraDistance} />
       </Canvas>
     </div>

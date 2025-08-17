@@ -5,6 +5,10 @@
   padding-top: 0;
 }
 
+.page-container:not(.no-navbar) {
+  height: calc(100vh - 4rem);
+}
+
 .writing-content {
   text-align: center;
   max-width: 100%;
@@ -74,4 +78,22 @@
   50% {
     transform: translateY(-10px);
   }
+}
+
+.zoom-controls,
+.font-size-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(135, 206, 235, 0.3);
+}
+
+.zoom-indicator,
+.font-size-indicator {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #87CEEB;
 }
